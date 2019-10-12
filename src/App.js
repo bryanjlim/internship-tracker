@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import "./App.css";
 import MainContainer from "./MainContainer";
 import Header from "./Header";
+import { CssBaseline } from "@material-ui/core";
 
 export class App extends Component {
   constructor(props) {
@@ -17,7 +17,8 @@ export class App extends Component {
       messagingSenderId: "700705257439",
       appId: "1:700705257439:web:7bceaee157b0e60d80366a",
       measurementId: "G-5QG71NE3VY",
-      clientId: "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
+      clientId:
+        "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
       scopes: [
         "email",
         "profile",
@@ -35,7 +36,7 @@ export class App extends Component {
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user)
+        console.log(user);
       } else {
         console.log("ERR: No User");
       }
@@ -46,11 +47,14 @@ export class App extends Component {
   }
 
   render() {
-    return(
+    return (
       <div class="App">
-        <Header signIn={this.signIn} isSignedIn={this.state.isSignedIn}></Header>
+        <CssBaseline />
+        <Header
+          signIn={this.signIn}
+          isSignedIn={this.state.isSignedIn}
+        ></Header>
         <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
-
       </div>
     );
   }
