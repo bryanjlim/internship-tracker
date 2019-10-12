@@ -1,24 +1,43 @@
 import React, {Component} from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import {withStyles} from '@material-ui/core'
+
+
+const useStyles = makeStyles(theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      flexGrow: 1,
+    },
+  }));
+
 
 export class Header extends Component {
     render() {
-        if(this.props.isSignedIn) {
-            return (
-                <div style={{marginBottom: "50px"}}>
-                    <img src="logo192.png" alt="Internship Tracker Logo" style={{display: "inline-block", height: "50px", marginLeft: "10%", marginRight: "5%"}}></img>
-                    <h1 style={{display: "inline-block", marginLeft: "5%", marginRight: "5%"}}>Internship Tracker</h1>
-                    <div style={{display: "inline-block", marginLeft: "5%", marginRight: "10%"}}>Signed in!</div>
-                </div>
-            );
-        } else {
-            return (
-                <div style={{marginBottom: "50px"}}>
-                    <img src="logo192.png" alt="Internship Tracker Logo" style={{display: "inline-block", height: "50px", marginLeft: "10%", marginRight: "5%"}}></img>
-                    <h1 style={{display: "inline-block", marginLeft: "5%", marginRight: "5%"}}>Internship Tracker</h1>
-                    <button onClick={this.props.signIn} style={{display: "inline-block", marginRight: "10%", marginLeft: "5%"}}>Sign in</button>                </div>
-            );
-        }
+        return (
+            <div className={this.props.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" className={this.props.menuButton} color="inherit" aria-label="menu">
+          </IconButton>
+          <Typography variant="h6" className={this.props.title}>
+            News
+          </Typography>
+          <Button color="inherit" onClick={this.props.signIn}>Login</Button>
+        </Toolbar>
+      </AppBar>
+    </div>
+        )
     }
 }
 
-export default Header;
+export default withStyles(useStyles)(Header);
