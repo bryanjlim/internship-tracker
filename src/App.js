@@ -43,6 +43,16 @@ export class App extends Component {
     this.googleAuthentication = this.googleAuthentication.bind(this);
   }
 
+  fetchData() {
+    var url = new URL('http://localhost:9000')
+    var params = {authToken:this.state.accessToken, userId:this.state.userId}
+    url.search = new URLSearchParams(params)
+    fetch(url).then( function(res) {
+      console.log("returned something");
+      console.log(res);
+    })
+  }
+
   render() {
     if (!this.state.isSignedIn) {
       return (
@@ -74,11 +84,15 @@ export class App extends Component {
         .signInWithPopup(provider)
         .then(function(result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
-          const token = result.credential.accessToken;
+          this.setState({
+            accessToken: result.credential.accessToken,
+            userId: result.user.userId
+          });
           // The signed-in user info.
           const user = result.user;
           // ...
           res();
+          this.fetchData();
         })
         .catch(function(error) {
           // Handle Errors here.
