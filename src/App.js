@@ -45,7 +45,9 @@ export class App extends Component {
 
   fetchData() {
     var url = new URL('http://localhost:9000')
-    var params = {authToken:this.state.accessToken, userId:this.state.userId}
+    let authToken = firebase.auth().currentUser.getIdToken();
+    let userId = firebase.auth().currentUser.userId();
+    var params = {authToken, userId}
     url.search = new URLSearchParams(params)
     fetch(url).then( function(res) {
       console.log("returned something");
@@ -84,10 +86,6 @@ export class App extends Component {
         .signInWithPopup(provider)
         .then(function(result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
-          this.setState({
-            accessToken: result.credential.accessToken,
-            userId: result.user.userId
-          });
           // The signed-in user info.
           const user = result.user;
           // ...
