@@ -4,19 +4,18 @@ export class Header extends Component {
     render() {
         if(this.props.isSignedIn) {
             return (
-                <div>
-                    <img src="logo192.png" alt="Internship Tracker Logo" style={{float: "left", height: "50px", marginLeft: "50px", marginTop: "50px"}}></img>
-                    <div style={{float: "right"}}>Signed in!</div>
-                    <h1>Internship Tracker</h1>
+                <div style={{marginBottom: "50px"}}>
+                    <img src="logo192.png" alt="Internship Tracker Logo" style={{display: "inline-block", height: "50px", marginLeft: "10%", marginRight: "5%"}}></img>
+                    <h1 style={{display: "inline-block", marginLeft: "5%", marginRight: "5%"}}>Internship Tracker</h1>
+                    <div style={{display: "inline-block", marginLeft: "5%", marginRight: "10%"}}>Signed in!</div>
                 </div>
             );
         } else {
             return (
-                <div>
-                    <img src="logo192.png" alt="Internship Tracker Logo" style={{float: "left", height: "50px", marginLeft: "50px", marginTop: "50px"}}></img>
-                    <button onClick={this.props.signIn} style={{float: "right", marginRight: "50px", marginTop: "50px"}}>Sign in</button>
-                    <h1>Internship Tracker</h1>
-                </div>
+                <div style={{marginBottom: "50px"}}>
+                    <img src="logo192.png" alt="Internship Tracker Logo" style={{display: "inline-block", height: "50px", marginLeft: "10%", marginRight: "5%"}}></img>
+                    <h1 style={{display: "inline-block", marginLeft: "5%", marginRight: "5%"}}>Internship Tracker</h1>
+                    <button onClick={this.props.signIn} style={{display: "inline-block", marginRight: "10%", marginLeft: "5%"}}>Sign in</button>                </div>
             );
         }
     }
