@@ -4,8 +4,6 @@ import "./App.css";
 import MainContainer from "./MainContainer";
 import Header from "./Header";
 
-let gapi;
-
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +16,13 @@ export class App extends Component {
       storageBucket: "track-my-internship.appspot.com",
       messagingSenderId: "700705257439",
       appId: "1:700705257439:web:7bceaee157b0e60d80366a",
-      measurementId: "G-5QG71NE3VY"
+      measurementId: "G-5QG71NE3VY",
+      clientId: "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
+      scopes: [
+        "email",
+        "profile",
+        "https://www.googleapis.com/auth/gmail.readonly"
+      ]
     };
 
     if (!firebase.apps.length) {
@@ -31,29 +35,7 @@ export class App extends Component {
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = "https://apis.google.com/js/api.js";
-        // Once the Google API Client is loaded, you can run your code
-        script.onload = function(e) {
-          // Initialize the Google API Client with the config object
-          gapi.client
-            .init({
-              apiKey: config.apiKey,
-              clientId: config.clientID,
-              discoveryDocs: config.discoveryDocs,
-              scope: config.scopes.join(" ")
-            })
-            // Loading is finished, so start the app
-            .then(function() {
-              // Make sure the Google API Client is properly signed in
-              if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-                console.log(user);
-              } else {
-                firebase.auth().signOut(); // Something went wrong, sign out
-              }
-            });
-        };
+        console.log(user)
       } else {
         console.log("ERR: No User");
       }
@@ -71,19 +53,6 @@ export class App extends Component {
 
       </div>
     );
-
-    if(!this.state.isSignedIn) {
-      return (
-        <div className="App">
-          <button onClick={this.signIn}>Sign In</button>
-        </div>
-      );
-    } else {
-      return (
-        <h1>Signed In!</h1>
-      )
-    }
-    
   }
 
   signIn() {
