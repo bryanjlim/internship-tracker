@@ -67,6 +67,8 @@ export class App extends Component {
     }
   }
 
+
+
   signIn() {
     this.googleAuthentication()
       .then(() => {
@@ -76,6 +78,7 @@ export class App extends Component {
         console.log("error: " + e);
       });
   }
+
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -88,6 +91,10 @@ export class App extends Component {
           // This gives you a Google Access Token. You can use it to access the Google API.
           // The signed-in user info.
           const user = result.user;
+          
+
+
+
           // ...
           res();
           this.fetchData();
