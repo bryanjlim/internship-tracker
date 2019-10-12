@@ -55,6 +55,8 @@ export class App extends Component {
     }
   }
 
+
+
   signIn() {
     this.googleAuthentication()
       .then(() => {
@@ -64,6 +66,7 @@ export class App extends Component {
         console.log("error: " + e);
       });
   }
+
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -77,6 +80,10 @@ export class App extends Component {
           const token = result.credential.accessToken;
           // The signed-in user info.
           const user = result.user;
+          
+
+
+
           // ...
           res();
         })
