@@ -1,25 +1,35 @@
-import React, { Component } from 'react';
-import firebase from 'firebase';
-import './App.css';
+import React, { Component } from "react";
+import firebase from "firebase";
+import "./App.css";
 
 export class App extends Component {
   constructor(props) {
     super(props);
 
     const config = {
-      // TODO: put Firebase config here
+      apiKey: "AIzaSyDoj6K6NL3JzKbUv-K424ybISws9d16UhY",
+      authDomain: "track-my-internship.firebaseapp.com",
+      databaseURL: "https://track-my-internship.firebaseio.com",
+      projectId: "track-my-internship",
+      storageBucket: "track-my-internship.appspot.com",
+      messagingSenderId: "700705257439",
+      appId: "1:700705257439:web:7bceaee157b0e60d80366a",
+      measurementId: "G-5QG71NE3VY"
     };
-    firebase.initializeApp(config);
 
-    this.state = {
-      isSignedIn: false,
+    if (!firebase.apps.length) {
+      firebase.initializeApp(config);
     }
 
-    firebase.auth().onAuthStateChanged((user) => {
+    this.state = {
+      isSignedIn: false
+    };
+
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user)
+        console.log(user);
       } else {
-        console.log("ERR: No User")
+        console.log("ERR: No User");
       }
     });
 
@@ -28,40 +38,48 @@ export class App extends Component {
   }
 
   render() {
-    if (this.state.isLoading) {
-      return (<div className="App"><div>This Is Our App</div></div>);
-    }
+    return (
+      <div className="App">
+        <h1>This Is Our App</h1>
+      </div>
+    );
   }
 
   signIn() {
-    this.googleAuthentication().then(() => {
-      this.setState({ isSignedIn: true });
-    }).catch((e) => {
-      console.log("error: " + e);
-    });
+    this.googleAuthentication()
+      .then(() => {
+        this.setState({ isSignedIn: true });
+      })
+      .catch(e => {
+        console.log("error: " + e);
+      });
   }
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
 
     return new Promise((res, err) => {
-      firebase.auth().signInWithPopup(provider).then(function (result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const token = result.credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // ...
-        res();
-      }).catch(function (error) {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        const credential = error.credential;
-        err(errorCode + errorMessage + email + credential);
-      });
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(function(result) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          const token = result.credential.accessToken;
+          // The signed-in user info.
+          const user = result.user;
+          // ...
+          res();
+        })
+        .catch(function(error) {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          const credential = error.credential;
+          err(errorCode + errorMessage + email + credential);
+        });
     });
   }
 }
