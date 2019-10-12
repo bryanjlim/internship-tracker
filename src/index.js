@@ -19,10 +19,6 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    {/* <link
-      href="https://fonts.googleapis.com/css?family=Lato&display=swap"
-      rel="stylesheet"
-    /> */}
     <App />
   </MuiThemeProvider>,
   document.getElementById("root")
