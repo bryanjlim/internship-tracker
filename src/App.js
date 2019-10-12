@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import firebase from "firebase";
 import "./App.css";
+import MainContainer from "./MainContainer";
+import Header from "./Header";
 
 let gapi;
 
@@ -62,6 +64,14 @@ export class App extends Component {
   }
 
   render() {
+    return(
+      <div class="App">
+        <Header signIn={this.signIn} isSignedIn={this.state.isSignedIn}></Header>
+        <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
+
+      </div>
+    );
+
     if(!this.state.isSignedIn) {
       return (
         <div className="App">
