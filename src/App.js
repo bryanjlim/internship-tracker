@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import firebase from "firebase";
 import "./App.css";
 
+let gapi;
+
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +29,29 @@ export class App extends Component {
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user);
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "https://apis.google.com/js/api.js";
+        // Once the Google API Client is loaded, you can run your code
+        script.onload = function(e) {
+          // Initialize the Google API Client with the config object
+          gapi.client
+            .init({
+              apiKey: config.apiKey,
+              clientId: config.clientID,
+              discoveryDocs: config.discoveryDocs,
+              scope: config.scopes.join(" ")
+            })
+            // Loading is finished, so start the app
+            .then(function() {
+              // Make sure the Google API Client is properly signed in
+              if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                console.log(user);
+              } else {
+                firebase.auth().signOut(); // Something went wrong, sign out
+              }
+            });
+        };
       } else {
         console.log("ERR: No User");
       }
@@ -38,11 +62,18 @@ export class App extends Component {
   }
 
   render() {
-    return (
-      <div className="App">
-        <h1>This Is Our App</h1>
-      </div>
-    );
+    if(!this.state.isSignedIn) {
+      return (
+        <div className="App">
+          <button onClick={this.signIn}>Sign In</button>
+        </div>
+      );
+    } else {
+      return (
+        <h1>Signed In!</h1>
+      )
+    }
+    
   }
 
   signIn() {
