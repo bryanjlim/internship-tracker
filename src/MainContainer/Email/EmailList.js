@@ -19,7 +19,6 @@ function Emails(props) {
   const emails2019 = [
     {
       company: "Google",
-      position: "Google Engineering Practicum Summer Intern",
       status: "Accepted",
       accepted:
         "Congratulations! Your application for the Google Engineering Practicum has been accepted!",
@@ -29,7 +28,6 @@ function Emails(props) {
     },
     {
       company: "Amazon",
-      position: "Software Engineering Intern",
       status: "Rejected",
       applied: "Your application for Summer 2020 has been received",
       rejected:
@@ -38,14 +36,16 @@ function Emails(props) {
     },
     {
       company: "Microsoft",
-      position: "Product Management Intern",
       status: "Applied",
       applied: "Your application has been recieved",
       time: "8/3/2019"
     }
   ];
+  emails2019.sort((a, b) => {
+    return (new Date(a.time).getTime() > new Date(b.time).getTime()) ? -1 : 1;
+  });
   const listItems = emails2019.map(email => (
-    <Grid item key={email.company + " " + email.position}>
+    <Grid item key={email.company}>
       <Email
         company={email.company}
         status={email.status}
