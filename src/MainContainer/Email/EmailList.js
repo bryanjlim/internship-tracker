@@ -25,10 +25,10 @@ function Emails(props) {
             company={company}
             status={props.years[year][company].status}
             time={props.years[year][company].time}
-            accepted={props.years[year][company].accepted}
-            applied={props.years[year][company].applied}
-            rejected={props.years[year][company].rejected}
-            interviewing={props.years[year][company].interviewing}
+            accepted={props.years[year][company].emails[0]['body']}
+            applied={props.years[year][company].emails[0]['body']}
+            rejected={props.years[year][company].emails[2]}
+            interviewing={props.years[year][company].emails[1]}
           ></Email>
         </Grid>
       );

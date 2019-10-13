@@ -46,15 +46,15 @@ export class Email extends Component {
 
   render() {
     const activeStep =
-      this.props.status === "Applied"
+      this.props.status.toUpperCase() === "APPLIED"
         ? 0
-        : this.props.status === "Interviewing"
+        : this.props.status.toUpperCase() === "INTERVIEWING"
         ? 1
-        : this.props.status === "Accepted" || this.props.status === "Rejected"
+        : this.props.status.toUpperCase() === "ACCEPTED" || this.props.status === "Rejected"
         ? 2
         : 3;
     const { classes } = this.props;
-    const finalStep = this.props.status === "Rejected" ? "Rejected" : "Accepted"
+    const finalStep = this.props.status.toUpperCase() === "REJECTED" ? "Rejected" : "Accepted"
     const steps = ["Applied", "Interviewing", finalStep];
     const mostRecent= "Most recent email received: " + this.props.time;
     return (
@@ -71,7 +71,7 @@ export class Email extends Component {
             <DeleteIcon />
           </IconButton>
             }
-            subheader={mostRecent}
+            subheader={""}
         >
           </CardHeader>
           <CardContent>

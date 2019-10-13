@@ -58,26 +58,30 @@ export class App extends Component {
   }
 
   fetchData(mostRecentTime, authToken) {
-    var url = new URL("http://localhost:9000/getData");
-    let userId = firebase.auth().currentUser.uid;
-    let params = {
-      authToken,
-      userId,
-      mostRecentTime
-    };
-    url.search = new URLSearchParams(params);
-    fetch(url)
-      .then(function(response) {
-        // The response is a Response instance.
-        // You parse the data into a useable format using `.json()`
-        return response.json();
-      })
-      .then(function(applications) {
-        console.log("returned data");
-        
-
-        console.log("returned something");
-      });
+    return new Promise((res,err) => {
+      var url = new URL("http://localhost:9000/getData");
+      let userId = firebase.auth().currentUser.uid;
+      let params = {
+        authToken,
+        userId,
+        mostRecentTime
+      };
+      url.search = new URLSearchParams(params);
+      fetch(url)
+        .then(function(response) {
+          // The response is a Response instance.
+          // You parse the data into a useable format using `.json()`
+          return response.json();
+        })
+        .then(function(applications) {
+          console.log("returned data");
+          
+  
+          console.log("returned something");
+          res(applications);
+        });
+    })
+    
   }
 
   render() {
@@ -121,8 +125,17 @@ export class App extends Component {
                 userData = items["userData"];
               }
             }
-            this.fetchData(userData.mostRecentTime, authToken);
-            this.setState({ isSignedIn: true, years });
+            this.fetchData(userData.mostRecentTime, authToken).then(result => {
+              console.log(result)
+              if(!years['2019']) {
+                years['2019'] = {}  
+              }
+              Object.keys(result['2019']).forEach(company => {
+                years['2019'][company] = result['2019'][company]
+              })
+              this.setState({ isSignedIn: true, years });
+            })
+            
           });
       })
       .catch(function(error) {

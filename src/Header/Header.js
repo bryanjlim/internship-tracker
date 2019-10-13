@@ -35,7 +35,7 @@ export class Header extends Component {
               aria-label="menu"
             ></IconButton>
             <Typography variant="h6" className={this.props.title}>
-              Internship Tracker
+              Track My Internship
             </Typography>
           </Toolbar>
         </AppBar>

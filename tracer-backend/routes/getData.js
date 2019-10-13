@@ -14,7 +14,7 @@ router.get("/", function(req, res, next) {
 //   let vals = { userId, accessToken, mostRecentTime };
 
   let url = "https://www.googleapis.com/gmail/v1/users/me/messages" + "?access_token=" + accessToken +
-            "&maxResults=10&q=(+intern OR +interns OR +internship) AND after:" + mostRecentTime;
+            "&maxResults=10&q=(+intern OR +interns OR +internship) AND label:inbox AND after:" + mostRecentTime;
   console.log("url: " + url);
   // map: key is time frame, value is array of application objects of that timeframe
   let applications = {};
@@ -53,8 +53,10 @@ router.get("/", function(req, res, next) {
                 // unencrypt body of email
                 let uBody = "";
                 if(payload.parts != null) {
-                    let body = payload.parts[0].body.data;
-                    uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
+                    let body = payload.parts[0].body.data;// || payload.parts[1].body.data;
+                    if(body != null) {
+                        uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
+                    }
                 }
                 
                 await parseEmail(uBody).then(results => {
