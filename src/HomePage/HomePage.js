@@ -19,7 +19,7 @@ const styles = {
     textAlign: "center"
   },
   signInButton: {
-    width: 200,
+    width: 175,
     marginTop: "5em",
     marginLeft: "auto",
     marginRight: "auto",
