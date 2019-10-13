@@ -43,13 +43,17 @@ router.get("/", function(req, res, next) {
               let uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
               console.log(uBody);
 
+              let results = parseEmail(uBody);
+
               // get company with nlp
-              let company = null;
+              let company = results[0];
               console.log("step1");
+              console.log(company);
               
               // get current status with nlp
-              let status = "processing";
+              let status = results[1];
               console.log("step2");
+              console.log(status);
 
               if(!applications.has(mostRecentTime)) { // no date key present, add empty list
                 applications.set(mostRecentTime, new Map());
