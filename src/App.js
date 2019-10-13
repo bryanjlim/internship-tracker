@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import firebase from "firebase";
 import "./App.css";
+import { Application } from "./dataCollections"; 
 
 export class App extends Component {
   constructor(props) {
@@ -46,10 +47,11 @@ export class App extends Component {
   fetchData() {
     console.log("fetching data")
     var url = new URL('http://localhost:9000/getData')
-    let authToken = firebase.auth().currentUser.getIdToken();
-    let userId = firebase.auth().currentUser.userId;
+    let authToken = firebase.auth().currentUser.;
+    console.log(authToken)
+    let userId = firebase.auth().currentUser.uid;
     var params = {authToken, userId}
-    url.search = new URLSearchParams(params)
+    url.search = new URLSearchParams(params);
     fetch(url)
     .then(function(response) {
       // The response is a Response instance.
@@ -58,6 +60,10 @@ export class App extends Component {
     }).then(function(data) {
       console.log("returned something");
       console.log(data);
+      console.log(data.authToken);
+      console.log(data.userId);
+      console.log(data.userId2);
+      console.log(data.test);
     })
   }
 
@@ -98,7 +104,6 @@ export class App extends Component {
           console.log("finished authenticating");
           // This gives you a Google Access Token. You can use it to access the Google API.
           // The signed-in user info.
-          const user = result.user;
           
           that.fetchData();
 
