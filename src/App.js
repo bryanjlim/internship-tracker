@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-<<<<<<< HEAD
 import MainContainer from "./MainContainer/MainContainer";
 import Header from "./Header/Header";
 import { CssBaseline } from "@material-ui/core";
-=======
 import "./App.css";
 import { Application } from "./dataCollections"; 
->>>>>>> master
 
 export class App extends Component {
   constructor(props) {
@@ -41,9 +38,6 @@ export class App extends Component {
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-<<<<<<< HEAD
-        console.log(user);
-=======
         this.setState({isSignedIn: true})
         const db = firebase.database();
         let years = [];
@@ -60,7 +54,6 @@ export class App extends Component {
             }
           });
         this.fetchData(userData.mostRecentTime);
->>>>>>> master
       } else {
         console.log("ERR: No User");
       }
