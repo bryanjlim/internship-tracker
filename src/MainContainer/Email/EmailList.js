@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Email from "./Email";
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import OverrideDialog from './OverrideDialog';
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import OverrideDialog from "./OverrideDialog";
+import firebase from "firebase";
 
 const styles = theme => ({
   root: {
@@ -51,7 +52,7 @@ function Emails(props) {
     }
   ];
   emails2019.sort((a, b) => {
-    return (new Date(a.time).getTime() > new Date(b.time).getTime()) ? -1 : 1;
+    return new Date(a.time).getTime() > new Date(b.time).getTime() ? -1 : 1;
   });
   const listItems = emails2019.map(email => (
     <Grid item key={email.company}>
@@ -72,7 +73,13 @@ function Emails(props) {
 export class EmailList extends Component {
   constructor(props) {
     super(props);
-    this.state = { emailContent: "", status: this.props.status, company: this.props.company, time: this.props.time,  overrideOpen: false };
+    this.state = {
+      emailContent: "",
+      status: this.props.status,
+      company: this.props.company,
+      time: this.props.time,
+      overrideOpen: false
+    };
   }
   render() {
     const { classes } = this.props;
@@ -88,21 +95,39 @@ export class EmailList extends Component {
         >
           {Emails(this.props)}
         </Grid>
-        <Fab color="primary" aria-label="add" className={classes.fab} onClick={() => {
-              this.setState({
-                  overrideOpen: true
-              })}}>
-          <AddIcon/>
+        <Fab
+          color="primary"
+          aria-label="add"
+          className={classes.fab}
+          onClick={() => {
+            this.setState({
+              overrideOpen: true
+            });
+          }}
+        >
+          <AddIcon />
         </Fab>
-        <OverrideDialog 
+        <OverrideDialog
           dialogOpen={this.state.overrideOpen}
           company={this.state.company}
           status={this.state.status}
           time={this.state.time}
-          onClose={(save) => this.setState({ overrideOpen: false })}
-          setCompany={(company) => this.setState({company})}
-          setStatus={(status)=>this.setState({status})}
-          setTime={(time)=>this.setState({time})}
+          onClose={save => this.setState({ overrideOpen: false })}
+          setCompany={company => this.setState({ company })}
+          setStatus={status => this.setState({ status })}
+          setTime={time => this.setState({ time })}
+          onSubmit={() => {
+            this.props.years["2019"].push({
+              company: {
+                status: this.state.status,
+                time: this.state.time
+              }
+            });
+            firebase
+              .database()
+              .ref("/" + firebase.auth().currentUser.uid)
+              .set({ years: this.props.years });
+          }}
         />
       </div>
     );
