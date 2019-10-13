@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import firebase from "firebase";
 import "./App.css";
+import { Application } from "./dataCollections"; 
 
 export class App extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export class App extends Component {
       messagingSenderId: "700705257439",
       appId: "1:700705257439:web:7bceaee157b0e60d80366a",
       measurementId: "G-5QG71NE3VY",
-      clientId: "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
+      clientId:
+        "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
       scopes: [
         "email",
         "profile",
@@ -33,7 +35,22 @@ export class App extends Component {
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user)
+        this.setState({isSignedIn: true})
+        const db = firebase.database();
+        let years = [];
+        let userData = {
+          mostRecentTime: "04/01/2004"
+        };
+        db.ref("/" + user.uid)
+          .once("value")
+          .then(value => {
+            const items = value.toJSON();
+            if (items != null) {
+              years = items[years];
+              userData = items[userData];
+            }
+          });
+        this.fetchData(userData.mostRecentTime);
       } else {
         console.log("ERR: No User");
       }
@@ -41,6 +58,26 @@ export class App extends Component {
 
     this.signIn = this.signIn.bind(this);
     this.googleAuthentication = this.googleAuthentication.bind(this);
+  }
+
+  fetchData(mostRecentTime) {
+    console.log("fetching data")
+    var url = new URL('http://localhost:9000/getData');
+    let authToken = firebase.auth().currentUser.getIdToken(true)
+      .then(function (token) {
+      let userId = firebase.auth().currentUser.uid;
+      let params = {"authToken": token, 
+                    "userId" : userId,
+                    "mostRecentTime": mostRecentTime};
+      url.search = new URLSearchParams(params);
+      fetch(url).then(function(response) {
+        // The response is a Response instance.
+        // You parse the data into a useable format using `.json()`
+        return response.json();
+      }).then(function(data) {
+        console.log("returned something");
+      });
+    });
   }
 
   render() {
@@ -55,8 +92,6 @@ export class App extends Component {
     }
   }
 
-
-
   signIn() {
     this.googleAuthentication()
       .then(() => {
@@ -67,24 +102,16 @@ export class App extends Component {
       });
   }
 
-
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
-
+    const that = this;
     return new Promise((res, err) => {
       firebase
         .auth()
         .signInWithPopup(provider)
         .then(function(result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
-          const token = result.credential.accessToken;
           // The signed-in user info.
-          const user = result.user;
-          
-
-
-
-          // ...
           res();
         })
         .catch(function(error) {
