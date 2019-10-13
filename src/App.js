@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import "./App.css";
+import MainContainer from "./MainContainer/MainContainer";
+import Header from "./Header/Header";
+import { CssBaseline } from "@material-ui/core";
 import { Application } from "./dataCollections"; 
 
 export class App extends Component {
@@ -81,15 +83,16 @@ export class App extends Component {
   }
 
   render() {
-    if (!this.state.isSignedIn) {
-      return (
-        <div className="App">
-          <button onClick={this.signIn}>Sign In</button>
-        </div>
-      );
-    } else {
-      return <h1>Signed In!</h1>;
-    }
+    return (
+      <div className="App">
+        <CssBaseline />
+        <Header
+          signIn={this.signIn}
+          isSignedIn={this.state.isSignedIn}
+        ></Header>
+        <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
+      </div>
+    );
   }
 
   signIn() {
