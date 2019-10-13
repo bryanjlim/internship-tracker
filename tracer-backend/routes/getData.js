@@ -3,10 +3,12 @@ var router = express.Router();
 const CONFIDENCE_VALUE = 0.3;
 
 router.get('/', function(req, res, next) {
-    let userId = req.userId;
-    let authToken = req.authToken;
+    let userId = req.query.userId;
+    let authToken = req.query.authToken;
+    let mostRecentTime = new Date(req.query.mostRecentTime);
+    let vals = {userId, authToken, mostRecentTime};
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify("returning data"));
+    res.send(JSON.stringify(vals));
 });
 
 async function parseEmail(text) {

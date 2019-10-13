@@ -6,7 +6,6 @@ const applyList = [];
 const applyStatus = {
     PROCESSING: "processing",
     INTERVIEWING: "interviewing",
-    PROCESSING: "processing",
     ACCEPTED: "accepted",
     DENIED: "denied"
 }

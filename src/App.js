@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import "./App.css";
+import MainContainer from "./MainContainer/MainContainer";
+import Header from "./Header/Header";
+import { CssBaseline } from "@material-ui/core";
+import { Application } from "./dataCollections"; 
 
 export class App extends Component {
   constructor(props) {
@@ -15,7 +18,8 @@ export class App extends Component {
       messagingSenderId: "700705257439",
       appId: "1:700705257439:web:7bceaee157b0e60d80366a",
       measurementId: "G-5QG71NE3VY",
-      clientId: "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
+      clientId:
+        "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
       scopes: [
         "email",
         "profile",
@@ -33,7 +37,22 @@ export class App extends Component {
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user)
+        this.setState({isSignedIn: true})
+        const db = firebase.database();
+        let years = [];
+        let userData = {
+          mostRecentTime: "04/01/2004"
+        };
+        db.ref("/" + user.uid)
+          .once("value")
+          .then(value => {
+            const items = value.toJSON();
+            if (items != null) {
+              years = items[years];
+              userData = items[userData];
+            }
+          });
+        this.fetchData(userData.mostRecentTime);
       } else {
         console.log("ERR: No User");
       }
@@ -43,37 +62,38 @@ export class App extends Component {
     this.googleAuthentication = this.googleAuthentication.bind(this);
   }
 
-  fetchData() {
+  fetchData(mostRecentTime) {
     console.log("fetching data")
-    var url = new URL('http://localhost:9000/getData')
-    let authToken = firebase.auth().currentUser.getIdToken();
-    let userId = firebase.auth().currentUser.userId;
-    var params = {authToken, userId}
-    url.search = new URLSearchParams(params)
-    fetch(url)
-    .then(function(response) {
-      // The response is a Response instance.
-      // You parse the data into a useable format using `.json()`
-      return response.json();
-    }).then(function(data) {
-      console.log("returned something");
-      console.log(data);
-    })
+    var url = new URL('http://localhost:9000/getData');
+    let authToken = firebase.auth().currentUser.getIdToken(true)
+      .then(function (token) {
+      let userId = firebase.auth().currentUser.uid;
+      let params = {"authToken": token, 
+                    "userId" : userId,
+                    "mostRecentTime": mostRecentTime};
+      url.search = new URLSearchParams(params);
+      fetch(url).then(function(response) {
+        // The response is a Response instance.
+        // You parse the data into a useable format using `.json()`
+        return response.json();
+      }).then(function(data) {
+        console.log("returned something");
+      });
+    });
   }
 
   render() {
-    if (!this.state.isSignedIn) {
-      return (
-        <div className="App">
-          <button onClick={this.signIn}>Sign In</button>
-        </div>
-      );
-    } else {
-      return <h1>Signed In!</h1>;
-    }
+    return (
+      <div className="App">
+        <CssBaseline />
+        <Header
+          signIn={this.signIn}
+          isSignedIn={this.state.isSignedIn}
+        ></Header>
+        <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
+      </div>
+    );
   }
-
-
 
   signIn() {
     this.googleAuthentication()
@@ -85,25 +105,16 @@ export class App extends Component {
       });
   }
 
-
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
     const that = this;
-    console.log("started authenticating");
     return new Promise((res, err) => {
       firebase
         .auth()
         .signInWithPopup(provider)
         .then(function(result) {
-          console.log("finished authenticating");
           // This gives you a Google Access Token. You can use it to access the Google API.
           // The signed-in user info.
-          const user = result.user;
-          
-          that.fetchData();
-
-
-          // ...
           res();
         })
         .catch(function(error) {
