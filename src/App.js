@@ -37,13 +37,13 @@ export class App extends Component {
       mostRecentTime
     };
     url.search = new URLSearchParams(params);
-    fetch(url)
-      .then(function(response) {
+    fetch(url).then(function(response) {
         // The response is a Response instance.
         // You parse the data into a useable format using `.json()`
         return response.json();
       })
       .then(function(data) {
+        console.log(data);
         console.log("returned something");
       });
   }
@@ -61,39 +61,36 @@ export class App extends Component {
   }
 
   signIn() {
-    this.googleAuthentication()
-      .then((user, authToken) => {
-        const db = firebase.database();
-        let years = [];
-        let userData = {
-          mostRecentTime: "04/01/2004"
-        };
-        db.ref("/" + user.uid)
-          .once("value")
-          .then(value => {
-            const items = value.toJSON();
-            if (items != null) {
-              years = items[years];
-              userData = items[userData];
-            }
-          });
-        this.fetchData(userData.mostRecentTime, authToken);
-        this.setState({ isSignedIn: true });
-      })
-      .catch(e => {
-        console.log("error: " + e);
-      });
-  }
+    this.googleAuthentication();
+    }
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/gmail.readonly");
-    return new Promise((res, err) => {
       firebase
         .auth()
         .signInWithPopup(provider)
-        .then(function(result) {
-          res(result.user, result.credential.accessToken);
+        .then((result) => {
+          console.log("success");
+          let authToken = result.credential.accessToken;
+          let user = result.user;
+          const db = firebase.database();
+          let years = [];
+          let userData = {
+            mostRecentTime: "04/01/2004"
+          };
+          db.ref("/" + user.uid)
+            .once("value")
+            .then(value => {
+              const items = value.toJSON();
+              if (items != null) {
+                years = items[years];
+                userData = items[userData];
+            }
+          });
+          console.log("authtoken: " + authToken);
+          this.fetchData(userData.mostRecentTime, authToken);
+          this.setState({ isSignedIn: true });
         })
         .catch(function(error) {
           // Handle Errors here.
@@ -103,9 +100,7 @@ export class App extends Component {
           const email = error.email;
           // The firebase.auth.AuthCredential type that was used.
           const credential = error.credential;
-          err(errorCode + errorMessage + email + credential);
         });
-    });
   }
 }
 
