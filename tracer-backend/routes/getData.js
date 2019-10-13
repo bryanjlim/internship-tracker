@@ -55,13 +55,13 @@ router.get("/", function(req, res, next) {
                 console.log(status);
 
                 if(!applications.has(mostRecentTime)) { // no date key present, add empty list
-                applications.set(mostRecentTime, new Map());
+                    applications.set(mostRecentTime, new Map());
                 }
                 console.log("step3");
                 let previousEmails = [];
                 if(applications.get(mostRecentTime).get(company)) { // no company key present
-                console.log("step4");
-                previousEmails = applications.get(mostRecentTime).get(company).emails;
+                    console.log("step4");
+                    previousEmails = applications.get(mostRecentTime).get(company).emails;
                 }              
                 console.log("step5");
                 previousEmails.push({"header": header, "body": body});
