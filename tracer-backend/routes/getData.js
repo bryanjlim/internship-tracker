@@ -4,9 +4,8 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
     let userId = req.query.userId;
     let authToken = req.query.authToken;
-    let time = req.query.mostRecentTime;
-    let test = "hi";
-    let vals = {userId, authToken, time, test};
+    let mostRecentTime = new Date(req.query.mostRecentTime);
+    let vals = {userId, authToken, mostRecentTime};
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(vals));
 });
