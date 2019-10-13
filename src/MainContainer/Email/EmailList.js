@@ -8,8 +8,7 @@ const styles = theme => ({
     flexGrow: 1
   },
   paper: {
-    height: 140,
-    width: 100
+    height: 140
   },
   control: {
     padding: theme.spacing(2)
@@ -24,8 +23,8 @@ function Emails(props) {
       status: "Accepted",
       accepted:
         "Congratulations! Your application for the Google Engineering Practicum has been accepted!",
-      interviewing: "Your are interviewing next week.",
-      applied: "We have recieved your application.",
+      interviewing: "You are interviewing next week.",
+      applied: "We have received your application.",
       time: "3/7/2019"
     },
     {
@@ -41,7 +40,7 @@ function Emails(props) {
       company: "Microsoft",
       position: "Product Management Intern",
       status: "Applied",
-      applied: "Your application has been received",
+      applied: "Your application has been recieved",
       time: "8/3/2019"
     }
   ];

@@ -30,26 +30,26 @@ const useColorlibStepIconStyles = makeStyles({
   }
 });
 
-const ColorlibStepIcon = props => {
+const ColorlibStepIconRejected = props => {
   const classes = useColorlibStepIconStyles();
   const { active, completed } = props;
+  
 
   const icons = {
     1: <CheckIcon />,
     2: <GroupAddIcon />,
-    3: <SentimentVerySatisfiedIcon />
+    3: <SentimentVeryDissatisfiedIcon />
   };
-  
-  return (
-      <div
-        className={clsx(classes.root, {
-          [classes.active]: active,
-          [classes.completed]: completed
-        })}
-      >
-        {icons[String(props.icon)]}
-      </div>
-  );
+      return (
+          <div
+            className={clsx(classes.root, {
+              [classes.active]: active,
+              [classes.completed]: completed
+            })}
+          >
+            {icons[String(props.icon)]}
+          </div>
+      );
 };
 
-export default ColorlibStepIcon;
+export default ColorlibStepIconRejected;

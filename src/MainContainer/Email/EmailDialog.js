@@ -14,7 +14,6 @@ const EmailDialog = props => {
   return (
     <div>
       <Dialog
-        maxWidth
         fullScreen={fullScreen}
         open={props.dialogOpen}
         onClose={props.onClose}
