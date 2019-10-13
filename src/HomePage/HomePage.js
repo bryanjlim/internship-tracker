@@ -48,6 +48,7 @@ const HomePage = props => {
         className={classes.signInButton}
         alt="Sign In"
         src={require("../signInButton.png")}
+        onClick={props.signIn}
       />
     </div>
   );
