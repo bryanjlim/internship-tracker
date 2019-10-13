@@ -15,7 +15,8 @@ export class App extends Component {
       messagingSenderId: "700705257439",
       appId: "1:700705257439:web:7bceaee157b0e60d80366a",
       measurementId: "G-5QG71NE3VY",
-      clientId: "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
+      clientId:
+        "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
       scopes: [
         "email",
         "profile",
@@ -33,7 +34,21 @@ export class App extends Component {
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user)
+        this.setState({isSignedIn: true})
+        const db = firebase.database();
+        let years = [];
+        let userData = {
+          mostRecentTime: new Date("04/01/2004")
+        };
+        db.ref("/" + user.uid)
+          .once("value")
+          .then(value => {
+            const items = value.toJSON();
+            if (items != null) {
+              years = items[years];
+              userData = items[userData];
+            }
+          });
       } else {
         console.log("ERR: No User");
       }
@@ -55,8 +70,6 @@ export class App extends Component {
     }
   }
 
-
-
   signIn() {
     this.googleAuthentication()
       .then(() => {
@@ -66,7 +79,6 @@ export class App extends Component {
         console.log("error: " + e);
       });
   }
-
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -80,10 +92,6 @@ export class App extends Component {
           const token = result.credential.accessToken;
           // The signed-in user info.
           const user = result.user;
-          
-
-
-
           // ...
           res();
         })
