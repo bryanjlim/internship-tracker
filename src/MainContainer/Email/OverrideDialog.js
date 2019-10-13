@@ -20,7 +20,7 @@ const OverrideDialog = props => {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {"Status: " + props.status}
+          Manual Override
         </DialogTitle>
         <DialogContent>
           <DialogContentText>{props.emailContent}</DialogContentText>

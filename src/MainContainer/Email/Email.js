@@ -38,11 +38,8 @@ const styles = theme => ({
 export class Email extends Component {
   constructor(props) {
     super(props);
-    this.state = { emailContent: "", status: "", dialogOpen: false };
+    this.state = { emailContent: "", status: "", dialogOpen: false, overrideOpen: false };
   }
-  handleExpandClick = () => {
-    this.setState(state => ({ expanded: !state.expanded }));
-  };
 
   render() {
     const activeStep =
@@ -65,10 +62,17 @@ export class Email extends Component {
           emailContent={this.state.emailContent}
           status={this.state.status}
         />
-        <OverrideDialog />
+        <OverrideDialog 
+          dialogOpen={this.state.overrideOpen}
+          onClose={() => this.setState({ overrideOpen: false })}
+        />
         <Card  className={classes.card}>
           <CardHeader title={this.props.company} action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" onClick={() => {
+              this.setState({
+                  overrideOpen: true
+              })
+          }}>
             <MoreVertIcon />
           </IconButton>
             }
