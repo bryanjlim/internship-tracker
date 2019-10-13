@@ -1,27 +1,25 @@
 import React, { Component } from "react";
-import classnames from "classnames";
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import { withStyles } from "@material-ui/core/styles";
-import {
-  Typography,
-  CardHeader,
-  CardContent,
-  Collapse
-} from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Typography, CardHeader, CardContent } from "@material-ui/core";
 import purple from "@material-ui/core/colors/purple";
 import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import CheckIcon from "@material-ui/icons/Check";
-import SettingsIcon from "@material-ui/icons/Settings";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import StepConnector from "@material-ui/core/StepConnector";
-import _ from "lodash";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import { useTheme } from "@material-ui/core/styles";
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -83,7 +81,8 @@ const useColorlibStepIconStyles = makeStyles({
     display: "flex",
     borderRadius: "50%",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    cursor: "pointer"
   },
   active: {
     backgroundImage:
@@ -125,7 +124,7 @@ function getSteps() {
 export class Email extends Component {
   constructor(props) {
     super(props);
-    this.state = { expanded: false };
+    this.state = { emailContent: "", status: "", dialogOpen: false };
   }
   handleExpandClick = () => {
     this.setState(state => ({ expanded: !state.expanded }));
@@ -143,51 +142,69 @@ export class Email extends Component {
     const { classes } = this.props;
     const steps = getSteps();
     return (
-      <Card className={classes.card}>
-        <CardHeader title={this.props.company}></CardHeader>
-        <CardContent>
-          {this.props.status === "Rejected" ? (
-            <Typography variant="body1">Rejected</Typography>
-          ) : (
-            <Stepper
-              alternativeLabel
-              activeStep={activeStep}
-              connector={<ColorlibConnector />}
-            >
-              {steps.map(label => (
-                <Step key={label}>
-                  <StepLabel StepIconComponent={ColorlibStepIcon}>
-                    {label}
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          )}
-        </CardContent>
-        <IconButton
-          className={classnames(classes.expand, {
-            [classes.expandOpen]: this.state.expanded
-          })}
-          onClick={this.handleExpandClick}
-          aria-expanded={this.state.expanded}
-          aria-label="Show more"
+      <div>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={() => this.setState({ dialogOpen: false })}
+          aria-labelledby="responsive-dialog-title"
         >
-          <ExpandMoreIcon />
-        </IconButton>
-        <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-          <Typography variant="body1">
-            {this.props.status === "Applied"
-              ? this.props.applied
-              : this.props.status === "Accepted"
-              ? this.props.accepted
-              : this.props.status === "Rejected"
-              ? this.props.rejected
-              : this.status === "Interviewing"
-              ? this.props.interviewing
-              : "INVALID STATUS - ERROR"}
-          </Typography>
-        </Collapse>
-      </Card>
+          <DialogTitle id="responsive-dialog-title">
+            {"Status: " + this.state.status}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>{this.state.emailContent}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.setState({ dialogOpen: false })}
+              color="primary"
+              autoFocus
+            >
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Card className={classes.card}>
+          <CardHeader title={this.props.company}></CardHeader>
+          <CardContent>
+            {this.props.status === "Rejected" ? (
+              <Typography variant="body1">Rejected</Typography>
+            ) : (
+              <Stepper
+                alternativeLabel
+                activeStep={activeStep}
+                connector={<ColorlibConnector />}
+              >
+                {steps.map(label => (
+                  <Step
+                    key={label}
+                    onClick={() =>
+                      this.setState({
+                        emailContent:
+                          label.toUpperCase() === "APPLIED"
+                            ? this.props.applied
+                            : label.toUpperCase() === "ACCEPTED"
+                            ? this.props.accepted
+                            : label.toUpperCase() === "REJECTED"
+                            ? this.props.rejected
+                            : label.toUpperCase() === "INTERVIEWING"
+                            ? this.props.interviewing
+                            : "INVALID STATUS - ERROR",
+                        status: label,
+                        dialogOpen: true
+                      })
+                    }
+                  >
+                    <StepLabel StepIconComponent={ColorlibStepIcon}>
+                      {label}
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 }
