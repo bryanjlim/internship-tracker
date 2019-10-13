@@ -38,7 +38,7 @@ const styles = theme => ({
 export class Email extends Component {
   constructor(props) {
     super(props);
-    this.state = { emailContent: "", status: "", dialogOpen: false, overrideOpen: false };
+    this.state = { emailContent: "", status: this.props.status, company: this.props.company, time: this.props.time, dialogOpen: false, overrideOpen: false };
   }
 
   render() {
@@ -64,7 +64,10 @@ export class Email extends Component {
         />
         <OverrideDialog 
           dialogOpen={this.state.overrideOpen}
-          onClose={() => this.setState({ overrideOpen: false })}
+          company={this.state.company}
+          status={this.state.status}
+          time={this.state.time}
+          onClose={(save) => this.setState({ overrideOpen: false })}
         />
         <Card  className={classes.card}>
           <CardHeader title={this.props.company} action={
