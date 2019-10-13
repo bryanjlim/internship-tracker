@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import "./App.css";
-import { Application } from "./dataCollections";
+import HomePage from "./HomePage/HomePage";
+import MainContainer from "./MainContainer/MainContainer";
+import Header from "./Header/Header";
+import { CssBaseline } from "@material-ui/core";
 
 export class App extends Component {
   constructor(props) {
@@ -20,7 +22,8 @@ export class App extends Component {
     firebase.initializeApp(firebaseConfig);
 
     this.state = {
-      isSignedIn: false
+      isSignedIn: false,
+      isInitializing: true
     };
 
     this.signIn = this.signIn.bind(this);
@@ -49,14 +52,19 @@ export class App extends Component {
   }
 
   render() {
-    if (!this.state.isSignedIn) {
+    if (this.state.isSignedIn) {
       return (
         <div className="App">
-          <button onClick={this.signIn}>Sign In</button>
+          <CssBaseline />
+          <Header
+            signIn={this.signIn}
+            isSignedIn={this.state.isSignedIn}
+          ></Header>
+          <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
         </div>
       );
     } else {
-      return <h1>Signed In!</h1>;
+      return <HomePage signIn={this.signIn} />;
     }
   }
 

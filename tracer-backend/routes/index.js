@@ -27,13 +27,22 @@ router.get('/', function(req, res, next) {
 
 module.exports = router;
 
+// Load client secrets from a local file.
 // Load client secrets from a local file. 
 fs.readFile('routes/credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Gmail API.
   // CALL FUNCTIONS FROM HERE :) :) :)
-  authorize(JSON.parse(content), listLabels, getRecentEmail);
+
+  //authorize(JSON.parse(content), getRecentEmail);
+  authorize(JSON.parse(content), getEmailBy);
+
 });
+
+
+// send header of my request as authorization token
+  //  request header and body
+    // set request.header 
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -115,7 +124,7 @@ function listLabels(auth) {
  */
 function getRecentEmail(auth) {
   // Only get the recent email - 'maxResults' parameter
-  gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 1,}, function(err, response) {
+  gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 10,}, function(err, response) {
       if (err) {
           console.log('The API returned an error: ' + err);
           return;
@@ -133,5 +142,39 @@ function getRecentEmail(auth) {
 
        console.log(response['data']);
     });
+  });
+}
+
+/**
+ * Get the recent email from your Gmail account
+ *
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+*/
+
+
+function getEmailBy(auth) {
+
+  // get to know total number of emails
+
+  gmail.users.messages.list({auth: auth, userId: 'me', q: "+intern OR +interns OR +internship", maxResults: 50,}, function(err, response) {
+    if (err) {
+        console.log('The API returned an error: ' + err);
+        return;
+    }
+
+  // how to get length of lists of messages
+
+    for (var i = 0; i < 1; i ++){
+      var message_id = response['data']['messages'][i]['id'];
+
+      // Retreive the actual message using the message id
+      gmail.users.messages.get({auth: auth, userId: 'me', 'id': message_id}, function(err, response) {
+        if (err) {
+            console.log('The API returned an error: ' + err);
+            return;
+        }
+        console.log(response['data']);
+      });
+    }
   });
 }
