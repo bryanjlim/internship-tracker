@@ -37,7 +37,9 @@ export class App extends Component {
         this.setState({isSignedIn: true})
         const db = firebase.database();
         let years = [];
-        let userData;
+        let userData = {
+          mostRecentTime: new Date("04/01/2004")
+        };
         db.ref("/" + user.uid)
           .once("value")
           .then(value => {
