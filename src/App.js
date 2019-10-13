@@ -8,7 +8,6 @@ import { CssBaseline } from "@material-ui/core";
 const mockData = {
   2019: {
     Google: {
-      company: "Google",
       status: "Accepted",
       accepted:
         "Congratulations! Your application for the Google Engineering Practicum has been accepted!",
