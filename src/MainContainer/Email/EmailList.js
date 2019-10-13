@@ -21,7 +21,9 @@ const styles = theme => ({
     margin: theme.spacing(1),
     float: "right",
     backgroundImage:
-      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)"
+      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+    position: "sticky",
+    bottom: "1em"
   }
 });
 
