@@ -35,7 +35,7 @@ fs.readFile('routes/credentials.json', (err, content) => {
   // CALL FUNCTIONS FROM HERE :) :) :)
 
   //authorize(JSON.parse(content), getRecentEmail);
-  authorize(JSON.parse(content), getRecentEmail);
+  authorize(JSON.parse(content), getEmailBy);
 
 });
 
@@ -151,11 +151,12 @@ function getRecentEmail(auth) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
 */
 
-/*
-function getEmailBy(auth, keyWord) {
-  gmail.users().messages().list({auth:auth, userId: uid, label: keyWord,}).execute();
 
-  gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 1,}, function(err, response) {
+function getEmailBy(auth) {
+
+  // get to know total number of emails
+
+  gmail.users.messages.list({auth: auth, userId: 'me', q: "+intern OR +interns OR +internship", maxResults: 50,}, function(err, response) {
     if (err) {
         console.log('The API returned an error: ' + err);
         return;
@@ -163,7 +164,7 @@ function getEmailBy(auth, keyWord) {
 
   // how to get length of lists of messages
 
-    for (var i = 0; i < 50; i ++){
+    for (var i = 0; i < 1; i ++){
       var message_id = response['data']['messages'][i]['id'];
 
       // Retreive the actual message using the message id
@@ -177,4 +178,3 @@ function getEmailBy(auth, keyWord) {
     }
   });
 }
-*/
