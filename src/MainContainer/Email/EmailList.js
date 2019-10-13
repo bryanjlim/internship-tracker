@@ -12,7 +12,7 @@ const styles = theme => ({
       width: 100,
     },
     control: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
     },
   });
 
@@ -44,7 +44,7 @@ function Emails(props) {
     ];
     const listItems = emails2019.map((email) =>
       
-        <Grid item>
+        <Grid item key={email.company + " " + email.position}>
             <Email company={email.company} status={email.status} time={email.time} accepted={email.accepted} applied={email.applied} rejected={email.rejected} interviewing={email.interviewing}></Email>
         </Grid>
       
@@ -59,7 +59,7 @@ export class EmailList extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Grid container alignItems="center" justify="center" className={classes.root} direction="column" spacing={16} style={{marginTop: "16dp"}}>
+            <Grid container alignItems="center" justify="center" className={classes.root} direction="column" spacing={5}>
                 {Emails(this.props)}
             </Grid>
         );

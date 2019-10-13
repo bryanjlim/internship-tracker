@@ -30,7 +30,7 @@ export class Header extends Component {
               color="inherit"
               aria-label="menu"
             ></IconButton>
-            <Typography variant="title" className={this.props.title}>
+            <Typography variant="h6" className={this.props.title}>
               Internship Tracker
             </Typography>
           </Toolbar>
