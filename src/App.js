@@ -45,8 +45,10 @@ export class App extends Component {
         // You parse the data into a useable format using `.json()`
         return response.json();
       })
-      .then(function(data) {
-        console.log(data);
+      .then(function(applications) {
+        console.log("returned data");
+        console.log(applications);
+
         console.log("returned something");
       });
   }

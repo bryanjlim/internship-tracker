@@ -7,75 +7,83 @@ router.get("/", function(req, res, next) {
 //   console.log("get");
   let userId = req.query.userId;
   let accessToken = req.query.authToken;
-  let mostRecentTime = req.query.mostRecentTime;
+  let mostRecentTime = "10/08/2019"; //req.query.mostRecentTime;
 //   console.log(userId);
 //   console.log(accessToken);
-//   console.log(mostRecentTime);
+  console.log(mostRecentTime);
 //   let vals = { userId, accessToken, mostRecentTime };
 
   let url = "https://www.googleapis.com/gmail/v1/users/me/messages" + "?access_token=" + accessToken +
-            "&maxResults=2&q=(+intern OR +interns OR +internship) AND after:" + mostRecentTime;
+            "&maxResults=10&q=(+intern OR +interns OR +internship) AND after:" + mostRecentTime;
   console.log("url: " + url);
-  fetch(url)
-    .then(response => response.json())
-    .then(json => {
-      // map: key is time frame, value is array of application objects of that timeframe
-      let applications = new Map();
-      Object.keys(json.messages).forEach(function(k) {
-        let id = json.messages[k].id;
-        let getUrl = "https://www.googleapis.com/gmail/v1/users/me/messages/" + id + "?access_token=" + accessToken;
-        console.log("newurl: " + getUrl);
-        fetch(getUrl)
-          .then(details => details.json())
-          .then(data => {
-              console.log("DATATATAT");
-              console.log(data);
-              //TODO convert mostrecent time to mostrecent cycle
+  // map: key is time frame, value is array of application objects of that timeframe
+  let applications = {};
+  fetch(url).then(response => response.json()).then(async function(json) {
+      if(!json.messages) { // no intern emails
+          console.log("\nnothing found")
+          res.send(JSON.stringify(applications));
+      } else {
+          console.log("foreach loop");
+          let counter = 0;
+          for(const messages of json.messages) {
+            let id = json.messages[counter].id;
+            counter++;
+            console.log("countervalue:" + counter);
+            let getUrl = "https://www.googleapis.com/gmail/v1/users/me/messages/" + id + "?access_token=" + accessToken;
+            console.log("newurl: " + getUrl);
+            await fetch(getUrl).then(details => details.json()).then(async (data) => {
+                console.log("DATATATAT");
+                console.log(data);
+                //TODO convert mostrecent time to mostrecent cycle
+                let time = null;
+                //
+                
+                // TODO get unencrypted header of email
+                let header = null;
+                // ~~~~~~~~~~~~~
 
-              //
-              
-              // TODO get unencrypted header of email
-              let header = null;
-              // ~~~~~~~~~~~~~
+                // unencrypt body of email
+                let body = data.payload.parts[0].body.data;
+                let uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
+                console.log(uBody);
 
-              // unencrypt body of email
-              let body = data.payload.parts[0].body.data;
-              let uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
-              console.log(uBody);
-
-              parseEmail(uBody).then(results => {
+                await parseEmail(uBody).then(results => {
                 // get company with nlp
-                let company = results[0];
-                console.log("step1");
-                console.log(company);
+                    console.log("after parsing");
+                    if(results[0] && results[1]) {
+                        let company = results[0];
+                        console.log("step1");
+                        console.log(company);
 
-                // get current status with nlp
-                let status = results[1];
-                console.log("step2");
-                console.log(status);
+                        // get current status with nlp
+                        let status = results[1];
+                        console.log("step2");
+                        console.log(status);
 
-                if(!applications.has(mostRecentTime)) { // no date key present, add empty list
-                    applications.set(mostRecentTime, new Map());
-                }
-                console.log("step3");
-                let previousEmails = [];
-                if(applications.get(mostRecentTime).get(company)) { // no company key present
-                    console.log("step4");
-                    previousEmails = applications.get(mostRecentTime).get(company).emails;
-                }              
-                console.log("step5");
-                previousEmails.push({"header": header, "body": body});
-                console.log("step6");
-                applications.get(mostRecentTime).set(company, {"status": status, "emails": previousEmails});
-                console.log("step7");
-                console.log("cycles: " + applications.size)
-                console.log("1st cycle companies: " + applications.size)
-                res.setHeader("Content-Type", "application/json");
-                console.log("step8")
-                res.send(JSON.stringify(applications));
-              })
-          });
-      });
+                        if(applications[mostRecentTime] == null) { // no date key present, add empty list
+                            console.log("increase size");
+                            applications[mostRecentTime] = {};
+                        }
+                        console.log("step3");
+                        let previousEmails = [];
+                        if(applications[mostRecentTime][company] != null) { // no company key present
+                            console.log("step4");
+                            previousEmails = applications[mostRecentTime][company]["emails"];
+                        }
+                        console.log("step5");
+                        previousEmails.push({"header": header, "body": uBody, "status": status, "time": time});
+                        console.log("step6");
+                        applications[mostRecentTime][company] = {"status": status, "emails": previousEmails};
+                        console.log("step7");
+                        }
+                    });
+                });
+            }
+            console.log("step8");
+            res.setHeader("Content-Type", "application/json");
+            console.log(JSON.stringify(applications));
+            res.send(JSON.stringify(applications));
+        }
     });
 });
 
@@ -136,9 +144,18 @@ async function parseEmail(text) {
             }
         });
         parseProduct.push(mostSalientValue, status);
+        console.log("FINISHED PARSING: " + parseProduct);
         res(parseProduct);
     })
     
 }
+
+// parseEmail("You can view, comment on, or merge this pull request online at:" + 
+// "https://github.com/bryanjlim/internship-tracker/pull/12" +
+// "Commit Summary" + 
+// "Added date UI to emails" + 
+// "File Changes" + 
+// "M src/MainContainer/Email/Email.js (5)" + 
+// "Patch Links:");
 
 module.exports = router;
