@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import firebase from "firebase";
 import HomePage from './HomePage/HomePage'
+import MainContainer from "./MainContainer/MainContainer";
+import Header from "./Header/Header";
+import { CssBaseline } from "@material-ui/core";
+import "./App.css";
+import { Application } from "./dataCollections"; 
 
 export class App extends Component {
   constructor(props) {
@@ -80,13 +85,16 @@ export class App extends Component {
   }
 
   render() {
-    if (!this.state.isSignedIn) {
-      return (
-        <HomePage signIn={this.signIn}/>
-      );
-    } else {
-      return <h1>Signed In!</h1>;
-    }
+    return (
+      <div className="App">
+        <CssBaseline />
+        <Header
+          signIn={this.signIn}
+          isSignedIn={this.state.isSignedIn}
+        ></Header>
+        <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
+      </div>
+    );
   }
 
   signIn() {
