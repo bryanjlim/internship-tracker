@@ -56,6 +56,7 @@ export class Email extends Component {
     const { classes } = this.props;
     const finalStep = this.props.status === "Rejected" ? "Rejected" : "Accepted"
     const steps = ["Applied", "Interviewing", finalStep];
+    const mostRecent= "Most recent email received: " + this.props.time;
     return (
       <div>
         <EmailDialog
@@ -69,7 +70,9 @@ export class Email extends Component {
           <IconButton aria-label="settings">
             <DeleteIcon />
           </IconButton>
-        }>
+            }
+            subheader={mostRecent}
+        >
           </CardHeader>
           <CardContent>
             {this.props.status === "Rejected" ? (
