@@ -1,50 +1,14 @@
 import React, { Component } from "react";
-import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography, CardHeader, CardContent } from "@material-ui/core";
 import purple from "@material-ui/core/colors/purple";
-import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import CheckIcon from "@material-ui/icons/Check";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
-import StepConnector from "@material-ui/core/StepConnector";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { useTheme } from "@material-ui/core/styles";
+import ColorlibConnector from "./ColorLibConnector";
+import ColorlibStepIcon from "./ColorLibStepIcon";
 import EmailDialog from "./EmailDialog";
-
-const ColorlibConnector = withStyles({
-  alternativeLabel: {
-    top: 22
-  },
-  active: {
-    "& $line": {
-      backgroundImage:
-        "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)"
-    }
-  },
-  completed: {
-    "& $line": {
-      backgroundImage:
-        "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)"
-    }
-  },
-  line: {
-    height: 3,
-    border: 0,
-    backgroundColor: "#eaeaf0",
-    borderRadius: 1
-  }
-})(StepConnector);
 
 const styles = theme => ({
   card: {
@@ -61,56 +25,6 @@ const styles = theme => ({
     backgroundColor: purple[500]
   }
 });
-
-const useColorlibStepIconStyles = makeStyles({
-  root: {
-    backgroundColor: "#ccc",
-    zIndex: 1,
-    color: "#fff",
-    width: 50,
-    height: 50,
-    display: "flex",
-    borderRadius: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer"
-  },
-  active: {
-    backgroundImage:
-      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
-    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)"
-  },
-  completed: {
-    backgroundImage:
-      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)"
-  }
-});
-
-function ColorlibStepIcon(props) {
-  const classes = useColorlibStepIconStyles();
-  const { active, completed } = props;
-
-  const icons = {
-    1: <CheckIcon />,
-    2: <GroupAddIcon />,
-    3: <SentimentVerySatisfiedIcon />
-  };
-
-  return (
-    <div
-      className={clsx(classes.root, {
-        [classes.active]: active,
-        [classes.completed]: completed
-      })}
-    >
-      {icons[String(props.icon)]}
-    </div>
-  );
-}
-
-function getSteps() {
-  return ["Applied", "Interviewing", "Accepted"];
-}
 
 export class Email extends Component {
   constructor(props) {
@@ -131,7 +45,7 @@ export class Email extends Component {
         ? 2
         : 3;
     const { classes } = this.props;
-    const steps = getSteps();
+    const steps = ["Applied", "Interviewing", "Accepted"];
     return (
       <div>
         <EmailDialog
