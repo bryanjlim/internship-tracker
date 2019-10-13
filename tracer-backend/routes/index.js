@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-// extra vars
+// variables for Google API
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
@@ -10,7 +10,14 @@ const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'token.json';
+
+// Change token directory to your system preference
+var TOKEN_DIR = ('./');
+var TOKEN_PATH = TOKEN_DIR + 'gmail-nodejs.json';
+ 
+var gmail = google.gmail('v1');
+
+//const TOKEN_PATH = 'token.json';
 
 
 /* GET home page. */
@@ -24,7 +31,8 @@ module.exports = router;
 fs.readFile('credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Gmail API.
-  authorize(JSON.parse(content), listLabels);
+  // CALL FUNCTIONS FROM HERE :) :) :)
+  authorize(JSON.parse(content), listLabels, getRecentEmail);
 });
 
 /**
@@ -97,5 +105,33 @@ function listLabels(auth) {
     } else {
       console.log('No labels found.');
     }
+  });
+}
+
+/**
+ * Get the recent email from your Gmail account
+ *
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ */
+function getRecentEmail(auth) {
+  // Only get the recent email - 'maxResults' parameter
+  gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 1,}, function(err, response) {
+      if (err) {
+          console.log('The API returned an error: ' + err);
+          return;
+      }
+
+    // Get the message id which we will need to retreive tha actual message next.
+    var message_id = response['data']['messages'][0]['id'];
+
+    // Retreive the actual message using the message id
+    gmail.users.messages.get({auth: auth, userId: 'me', 'id': message_id}, function(err, response) {
+        if (err) {
+            console.log('The API returned an error: ' + err);
+            return;
+        }
+
+       console.log(response['data']);
+    });
   });
 }
