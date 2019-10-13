@@ -8,93 +8,92 @@ router.get("/", function(req, res, next) {
   let userId = req.query.userId;
   let accessToken = req.query.authToken;
   let mostRecentTime = req.query.mostRecentTime;
-  let finalYear = 0;
 //   console.log(userId);
 //   console.log(accessToken);
-//   console.log(mostRecentTime);
+  console.log(mostRecentTime);
 //   let vals = { userId, accessToken, mostRecentTime };
 
   let url = "https://www.googleapis.com/gmail/v1/users/me/messages" + "?access_token=" + accessToken +
-            "&maxResults=2&q=(+intern OR +interns OR +internship) AND after:" + mostRecentTime;
+            "&maxResults=10&q=(+intern OR +interns OR +internship) AND after:" + mostRecentTime;
   console.log("url: " + url);
-  fetch(url)
-    .then(response => response.json())
-    .then(json => {
-      // map: key is time frame, value is array of application objects of that timeframe
-      let applications = new Map();
-      Object.keys(json.messages).forEach(function(k) {
-        let id = json.messages[k].id;
-        let getUrl = "https://www.googleapis.com/gmail/v1/users/me/messages/" + id + "?access_token=" + accessToken;
-        console.log("newurl: " + getUrl);
-        fetch(getUrl)
-          .then(details => details.json())
-          .then(data => {
-              console.log("DATATATAT");
-              console.log(data);
-              //TODO convert mostrecent time to mostrecent cycle
+  // map: key is time frame, value is array of application objects of that timeframe
+  let applications = {};
+  fetch(url).then(response => response.json()).then(async function(json) {
+      if(!json.messages) { // no intern emails
+          console.log("\nnothing found")
+          res.send(JSON.stringify(applications));
+      } else {
+          console.log("foreach loop");
+          let counter = 0;
+          for(const messages of json.messages) {
+            let id = json.messages[counter].id;
+            counter++;
+            console.log("countervalue:" + counter);
+            let getUrl = "https://www.googleapis.com/gmail/v1/users/me/messages/" + id + "?access_token=" + accessToken;
+            console.log("newurl: " + getUrl);
+            await fetch(getUrl).then(details => details.json()).then(async (data) => {
+                console.log("DATATATAT");
+                console.log(data);
+                let payload = data.payload;
+                //TODO convert mostrecent time to mostrecent cycle
+                let wholeTime = payload.headers[1].value.substring(66);
+                console.log("wholetime:" + wholeTime)
+                let month = payload.headers[1].value.substring(72, 76);
+                let year = parseInt(payload.headers[1].value.substring(76, 81));
+                let finalYear = year;
+                primaryMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+                if (primaryMonths.includes(month)){
+                    finalYear = year-1;
+                }  
 
-              console.log('SEE BELOW');
-              console.log(data.payload.headers[1].value);
-              let month = data.payload.headers[1].value.substring(72, 76);
-              let year = parseInt(data.payload.headers[1].value.substring(76, 81));
-              month = 'Jun'
-              year = 2015
-              primaryMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-              if (primaryMonths.includes(month)){
-                  finalYear = year-1;
-              }
-              else {
-                  finalYear = year;
-              }
-              console.log('finalYear');
-              console.log(finalYear);
-              console.log('hi');
+                // TODO get unencrypted header of email
+                let header = null;
+                // ~~~~~~~~~~~~~
 
-
-              //
-              
-              // TODO get unencrypted header of email
-              let header = null;
-              // ~~~~~~~~~~~~~
-
-              // unencrypt body of email
-              //let body = data.payload.parts[0].body.data;
-              let uBody = "plkoji";//base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
-              console.log(uBody);
-
-              parseEmail(uBody).then(results => {
-                // get company with nlp
-                let company = results[0];
-                console.log("step1");
-                console.log(company);
-
-                // get current status with nlp
-                let status = results[1];
-                console.log("step2");
-                console.log(status);
-
-                if(!applications.has(mostRecentTime)) { // no date key present, add empty list
-                    applications.set(mostRecentTime, new Map());
+                // unencrypt body of email
+                let uBody = "";
+                if(payload.parts != null) {
+                    let body = payload.parts[0].body.data;
+                    uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
                 }
-                console.log("step3");
-                let previousEmails = [];
-                if(applications.get(mostRecentTime).get(company)) { // no company key present
-                    console.log("step4");
-                    previousEmails = applications.get(mostRecentTime).get(company).emails;
-                }              
-                console.log("step5");
-                previousEmails.push({"header": header, "body": body});
-                console.log("step6");
-                applications.get(mostRecentTime).set(company, {"status": status, "emails": previousEmails});
-                console.log("step7");
-                console.log("cycles: " + applications.size)
-                console.log("1st cycle companies: " + applications.size)
-                res.setHeader("Content-Type", "application/json");
-                console.log("step8")
-                res.send(JSON.stringify(applications));
-              })
-          });
-      });
+                
+                await parseEmail(uBody).then(results => {
+                // get company with nlp
+                    console.log("after parsing");
+                    if(results[0] && results[1]) {
+                        let company = results[0];
+                        console.log("step1");
+                        console.log(company);
+
+                        // get current status with nlp
+                        let status = results[1];
+                        console.log("step2");
+                        console.log(status);
+
+                        if(applications[finalYear] == null) { // no date key present, add empty list
+                            console.log("increase size");
+                            applications[finalYear] = {};
+                        }
+                        console.log("step3");
+                        let previousEmails = [];
+                        if(applications[finalYear][company] != null) { // no company key present
+                            console.log("step4");
+                            previousEmails = applications[finalYear][company]["emails"];
+                        }
+                        console.log("step5");
+                        previousEmails.push({"header": header, "body": uBody, "status": status}); // "time": wholeTime});
+                        console.log("step6");
+                        applications[finalYear][company] = {"status": status, "emails": previousEmails};
+                        console.log("step7");
+                        }
+                    });
+                });
+            }
+            console.log("step8");
+            res.setHeader("Content-Type", "application/json");
+            console.log(JSON.stringify(applications));
+            res.send(JSON.stringify(applications));
+        }
     });
 });
 
@@ -155,9 +154,18 @@ async function parseEmail(text) {
             }
         });
         parseProduct.push(mostSalientValue, status);
+        console.log("FINISHED PARSING: " + parseProduct);
         res(parseProduct);
     })
     
 }
+
+// parseEmail("You can view, comment on, or merge this pull request online at:" + 
+// "https://github.com/bryanjlim/internship-tracker/pull/12" +
+// "Commit Summary" + 
+// "Added date UI to emails" + 
+// "File Changes" + 
+// "M src/MainContainer/Email/Email.js (5)" + 
+// "Patch Links:");
 
 module.exports = router;
