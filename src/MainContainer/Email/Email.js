@@ -20,6 +20,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { useTheme } from "@material-ui/core/styles";
+import EmailDialog from "./EmailDialog";
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -47,7 +48,7 @@ const ColorlibConnector = withStyles({
 
 const styles = theme => ({
   card: {
-    width: 400
+    width: "100%"
   },
   media: {
     height: 0,
@@ -55,16 +56,6 @@ const styles = theme => ({
   },
   actions: {
     display: "flex"
-  },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
-    })
-  },
-  expandOpen: {
-    transform: "rotate(180deg)"
   },
   avatar: {
     backgroundColor: purple[500]
@@ -143,27 +134,12 @@ export class Email extends Component {
     const steps = getSteps();
     return (
       <div>
-        <Dialog
-          open={this.state.dialogOpen}
+        <EmailDialog
           onClose={() => this.setState({ dialogOpen: false })}
-          aria-labelledby="responsive-dialog-title"
-        >
-          <DialogTitle id="responsive-dialog-title">
-            {"Status: " + this.state.status}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>{this.state.emailContent}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => this.setState({ dialogOpen: false })}
-              color="primary"
-              autoFocus
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
+          dialogOpen={this.state.dialogOpen}
+          emailContent={this.state.emailContent}
+          status={this.state.status}
+        />
         <Card className={classes.card}>
           <CardHeader title={this.props.company}></CardHeader>
           <CardContent>
