@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import purple from "@material-ui/core/colors/purple";
 
 import App from "./App";
@@ -8,12 +8,13 @@ import App from "./App";
 // Global Theme
 const theme = createMuiTheme({
   palette: {
-    type: 'dark',
-    primary: purple
+    type: "dark"
   }
 });
 
 ReactDOM.render(
-  <App/>,
+  <ThemeProvider theme={theme}>
+    <App />
+  </ThemeProvider>,
   document.getElementById("root")
 );
