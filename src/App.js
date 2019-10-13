@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import "./App.css";
-import { Application } from "./dataCollections"; 
+import HomePage from './HomePage/HomePage'
 
 export class App extends Component {
   constructor(props) {
@@ -83,9 +82,7 @@ export class App extends Component {
   render() {
     if (!this.state.isSignedIn) {
       return (
-        <div className="App">
-          <button onClick={this.signIn}>Sign In</button>
-        </div>
+        <HomePage signIn={this.signIn}/>
       );
     } else {
       return <h1>Signed In!</h1>;
