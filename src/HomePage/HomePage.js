@@ -41,7 +41,7 @@ const HomePage = props => {
         src={require("../logo.png")}
       />
 
-      <Typography className={classes.centerText} variant="title">
+      <Typography className={classes.centerText} variant="h6">
         <i>Track My Internship</i>
       </Typography>
 
