@@ -11,8 +11,8 @@ import ColorlibStepIcon from "./ColorLibStepIcon";
 import EmailDialog from "./EmailDialog";
 import ColorlibStepIconRejected from "./ColorLibStepIconRejected";
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import OverrideDialog from './OverrideDialog';
 
 
 const styles = theme => ({
@@ -65,10 +65,11 @@ export class Email extends Component {
           emailContent={this.state.emailContent}
           status={this.state.status}
         />
+        <OverrideDialog />
         <Card  className={classes.card}>
           <CardHeader title={this.props.company} action={
           <IconButton aria-label="settings">
-            <DeleteIcon />
+            <MoreVertIcon />
           </IconButton>
             }
             subheader={mostRecent}
