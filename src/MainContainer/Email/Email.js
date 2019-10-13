@@ -12,7 +12,6 @@ import {
 import IconButton from "@material-ui/core/IconButton";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import purple from "@material-ui/core/colors/purple";
-import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -74,7 +73,7 @@ const styles = theme => ({
   }
 });
 
-const useColorlibStepIconStyles = theme => ({
+const useColorlibStepIconStyles = makeStyles({
   root: {
     backgroundColor: "#ccc",
     zIndex: 1,
@@ -106,37 +105,18 @@ function ColorlibStepIcon(props) {
     2: <GroupAddIcon />,
     3: <SentimentVerySatisfiedIcon />
   };
-  let elementClass = classes.root;
-  console.log("Without additions");
-  console.log(elementClass);
-  if (active) {
-    elementClass = _.merge(classes.root, classes.active);
-  } else if (completed) {
-    elementClass = _.merge(classes.root, classes.completed);
-  }
-  console.log("With additions");
-  console.log(elementClass);
-  return <div className={elementClass}>{icons[String(props.icon)]}</div>;
+
+  return (
+    <div
+      className={clsx(classes.root, {
+        [classes.active]: active,
+        [classes.completed]: completed
+      })}
+    >
+      {icons[String(props.icon)]}
+    </div>
+  );
 }
-
-ColorlibStepIcon.propTypes = {
-  active: PropTypes.bool,
-  completed: PropTypes.bool,
-  icon: PropTypes.node
-};
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: "90%"
-  },
-  button: {
-    marginRight: theme.spacing(1)
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  }
-}));
 
 function getSteps() {
   return ["Applied", "Interviewing", "Accepted"];
