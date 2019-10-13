@@ -104,12 +104,13 @@ export class App extends Component {
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    const that = this;
+    provider.addScope("https://www.googleapis.com/auth/gmail.readonly");
     return new Promise((res, err) => {
       firebase
         .auth()
         .signInWithPopup(provider)
         .then(function(result) {
+          console.log('asdfsd');
           // This gives you a Google Access Token. You can use it to access the Google API.
           // The signed-in user info.
           res();
