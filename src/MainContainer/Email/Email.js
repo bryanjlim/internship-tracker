@@ -68,6 +68,9 @@ export class Email extends Component {
           status={this.state.status}
           time={this.state.time}
           onClose={(save) => this.setState({ overrideOpen: false })}
+          setCompany={(company) => this.setState({company})}
+          setStatus={(status)=>this.setState({status})}
+          setTime={(time)=>this.setState({time})}
         />
         <Card  className={classes.card}>
           <CardHeader title={this.props.company} action={

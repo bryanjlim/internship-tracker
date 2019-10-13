@@ -32,10 +32,10 @@ const OverrideDialog = props => {
         <DialogContent>
         <Grid container direction="column">
             <Grid item>
-            <TextField label="Company" value={props.company}></TextField>
+            <TextField label="Company" value={props.company} onChange={(e) => props.setCompany(e.target.value)}></TextField>
             </Grid>
             <Grid item>
-            <Select label="Status" value={props.status}>
+            <Select label="Status" value={props.status} onChange={(e) => props.setStatus(e.target.value)}>
                 <MenuItem value="Accepted">Accepted</MenuItem>
                 <MenuItem value="Applied">Applied</MenuItem>
                 <MenuItem value="Interviewing">Interviewing</MenuItem>
@@ -50,7 +50,8 @@ const OverrideDialog = props => {
                 margin="normal"
                 id="date-picker-inline"
                 label="Date picker inline"
-                value={props.time}/>
+                value={props.time}
+                onChange={(e) => props.setTime(e.target.value)}/>
             </MuiPickersUtilsProvider>
             </Grid>
         </Grid>
