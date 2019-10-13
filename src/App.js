@@ -52,7 +52,7 @@ export class App extends Component {
   }
 
   render() {
-    if (true|| this.state.isSignedIn) {
+    if (this.state.isSignedIn) {
       return (
         <div className="App">
           <CssBaseline />
