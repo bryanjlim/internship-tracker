@@ -37,14 +37,14 @@ router.get("/", function(req, res, next) {
                 let payload = data.payload;
                 //TODO convert mostrecent time to mostrecent cycle
                 let wholeTime = payload.headers[1].value.substring(66);
-                console.log("wholetime:" + wholeTime)
                 let month = payload.headers[1].value.substring(72, 76);
                 let year = parseInt(payload.headers[1].value.substring(76, 81));
                 let finalYear = year;
                 primaryMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
                 if (primaryMonths.includes(month)){
                     finalYear = year-1;
-                }  
+                } 
+                finalYear = "2019";
 
                 // TODO get unencrypted header of email
                 let header = null;

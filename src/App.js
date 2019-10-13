@@ -74,7 +74,7 @@ export class App extends Component {
       })
       .then(function(applications) {
         console.log("returned data");
-        console.log(applications);
+        
 
         console.log("returned something");
       });
