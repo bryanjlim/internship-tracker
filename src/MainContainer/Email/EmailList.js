@@ -16,47 +16,24 @@ const styles = theme => ({
 });
 
 function Emails(props) {
-  const emails2019 = [
-    {
-      company: "Google",
-      position: "Google Engineering Practicum Summer Intern",
-      status: "Accepted",
-      accepted:
-        "Congratulations! Your application for the Google Engineering Practicum has been accepted!",
-      interviewing: "You are interviewing next week.",
-      applied: "We have received your application.",
-      time: "3/7/2019"
-    },
-    {
-      company: "Amazon",
-      position: "Software Engineering Intern",
-      status: "Rejected",
-      applied: "Your application for Summer 2020 has been received",
-      rejected:
-        "We regret to inform you that we are unable to offer you an internship for the summer of 2020",
-      time: "8/1/2019"
-    },
-    {
-      company: "Microsoft",
-      position: "Product Management Intern",
-      status: "Applied",
-      applied: "Your application has been recieved",
-      time: "8/3/2019"
-    }
-  ];
-  const listItems = emails2019.map(email => (
-    <Grid item key={email.company + " " + email.position}>
-      <Email
-        company={email.company}
-        status={email.status}
-        time={email.time}
-        accepted={email.accepted}
-        applied={email.applied}
-        rejected={email.rejected}
-        interviewing={email.interviewing}
-      ></Email>
-    </Grid>
-  ));
+  let listItems = [];
+  Object.keys(props.years).forEach(year => {
+    Object.keys(props.years[year]).forEach(company => {
+      listItems.push(
+        <Grid item key={company}>
+          <Email
+            company={company}
+            status={props.years[year][company].status}
+            time={props.years[year][company].time}
+            accepted={props.years[year][company].accepted}
+            applied={props.years[year][company].applied}
+            rejected={props.years[year][company].rejected}
+            interviewing={props.years[year][company].interviewing}
+          ></Email>
+        </Grid>
+      );
+    });
+  });
   return listItems;
 }
 
