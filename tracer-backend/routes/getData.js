@@ -34,7 +34,8 @@ async function parseEmail(text) {
             } else if (lowerText.includes("denied") || lowerText.includes("regret")
                     || lowerText.includes("unable to offer") || lowerText.includes("not selected")
                     || lowerText.includes("thank you for your time") || lowerText.includes("encourage you to apply for other openings")
-                    || lowerText.includes("filled the position") || lowerText.includes("selected a candidate")) {
+                    || lowerText.includes("filled the position") || lowerText.includes("selected a candidate")
+                    || lowerText.includes("decided not to proceed")) {
                 parseProduct.push(entity, "denied");
             } else if (lowerText.includes("interview")) {
                 parseProduct.push(entity, "interviewing");
