@@ -6,6 +6,8 @@
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^4.5.1",
     "firebase": "^7.2.0",
+    "gapi-client": "0.0.3",
+    "googleapis": "^39.2.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "3.2.0"
