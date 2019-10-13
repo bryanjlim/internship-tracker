@@ -7,7 +7,7 @@ router.get("/", function(req, res, next) {
 //   console.log("get");
   let userId = req.query.userId;
   let accessToken = req.query.authToken;
-  let mostRecentTime = "10/08/2019"; //req.query.mostRecentTime;
+  let mostRecentTime = req.query.mostRecentTime;
 //   console.log(userId);
 //   console.log(accessToken);
   console.log(mostRecentTime);
@@ -34,19 +34,29 @@ router.get("/", function(req, res, next) {
             await fetch(getUrl).then(details => details.json()).then(async (data) => {
                 console.log("DATATATAT");
                 console.log(data);
+                let payload = data.payload;
                 //TODO convert mostrecent time to mostrecent cycle
-                let time = null;
-                //
-                
+                let wholeTime = payload.headers[1].value.substring(66);
+                console.log("wholetime:" + wholeTime)
+                let month = payload.headers[1].value.substring(72, 76);
+                let year = parseInt(payload.headers[1].value.substring(76, 81));
+                let finalYear = year;
+                primaryMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+                if (primaryMonths.includes(month)){
+                    finalYear = year-1;
+                }  
+
                 // TODO get unencrypted header of email
                 let header = null;
                 // ~~~~~~~~~~~~~
 
                 // unencrypt body of email
-                let body = data.payload.parts[0].body.data;
-                let uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
-                console.log(uBody);
-
+                let uBody = "";
+                if(payload.parts != null) {
+                    let body = payload.parts[0].body.data;
+                    uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
+                }
+                
                 await parseEmail(uBody).then(results => {
                 // get company with nlp
                     console.log("after parsing");
@@ -60,20 +70,20 @@ router.get("/", function(req, res, next) {
                         console.log("step2");
                         console.log(status);
 
-                        if(applications[mostRecentTime] == null) { // no date key present, add empty list
+                        if(applications[finalYear] == null) { // no date key present, add empty list
                             console.log("increase size");
-                            applications[mostRecentTime] = {};
+                            applications[finalYear] = {};
                         }
                         console.log("step3");
                         let previousEmails = [];
-                        if(applications[mostRecentTime][company] != null) { // no company key present
+                        if(applications[finalYear][company] != null) { // no company key present
                             console.log("step4");
-                            previousEmails = applications[mostRecentTime][company]["emails"];
+                            previousEmails = applications[finalYear][company]["emails"];
                         }
                         console.log("step5");
-                        previousEmails.push({"header": header, "body": uBody, "status": status, "time": time});
+                        previousEmails.push({"header": header, "body": uBody, "status": status}); // "time": wholeTime});
                         console.log("step6");
-                        applications[mostRecentTime][company] = {"status": status, "emails": previousEmails};
+                        applications[finalYear][company] = {"status": status, "emails": previousEmails};
                         console.log("step7");
                         }
                     });

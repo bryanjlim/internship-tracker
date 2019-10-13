@@ -10,8 +10,15 @@ import ColorlibConnector from "./ColorLibConnector";
 import ColorlibStepIcon from "./ColorLibStepIcon";
 import EmailDialog from "./EmailDialog";
 import ColorlibStepIconRejected from "./ColorLibStepIconRejected";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+
 
 const styles = theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
   card: {
     width: "250dp",
     minwidth: "80%"
@@ -49,6 +56,7 @@ export class Email extends Component {
     const { classes } = this.props;
     const finalStep = this.props.status === "Rejected" ? "Rejected" : "Accepted"
     const steps = ["Applied", "Interviewing", finalStep];
+    const mostRecent= "Most recent email received: " + this.props.time;
     return (
       <div>
         <EmailDialog
@@ -58,7 +66,14 @@ export class Email extends Component {
           status={this.state.status}
         />
         <Card  className={classes.card}>
-          <CardHeader title={this.props.company}></CardHeader>
+          <CardHeader title={this.props.company} action={
+          <IconButton aria-label="settings">
+            <DeleteIcon />
+          </IconButton>
+            }
+            subheader={mostRecent}
+        >
+          </CardHeader>
           <CardContent>
             {this.props.status === "Rejected" ? (
               <Stepper
