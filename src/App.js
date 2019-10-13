@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import firebase from "firebase";
+import HomePage from "./HomePage/HomePage";
 import MainContainer from "./MainContainer/MainContainer";
 import Header from "./Header/Header";
 import { CssBaseline } from "@material-ui/core";
-import { Application } from "./dataCollections"; 
 
 export class App extends Component {
   constructor(props) {
@@ -32,12 +32,13 @@ export class App extends Component {
     }
 
     this.state = {
-      isSignedIn: false
+      isSignedIn: false,
+      isInitializing: true
     };
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        this.setState({isSignedIn: true})
+        this.setState({ isSignedIn: true });
         const db = firebase.database();
         let years = [];
         let userData = {
@@ -63,36 +64,46 @@ export class App extends Component {
   }
 
   fetchData(mostRecentTime) {
-    console.log("fetching data")
-    var url = new URL('http://localhost:9000/getData');
-    let authToken = firebase.auth().currentUser.getIdToken(true)
-      .then(function (token) {
-      let userId = firebase.auth().currentUser.uid;
-      let params = {"authToken": token, 
-                    "userId" : userId,
-                    "mostRecentTime": mostRecentTime};
-      url.search = new URLSearchParams(params);
-      fetch(url).then(function(response) {
-        // The response is a Response instance.
-        // You parse the data into a useable format using `.json()`
-        return response.json();
-      }).then(function(data) {
-        console.log("returned something");
+    console.log("fetching data");
+    var url = new URL("http://localhost:9000/getData");
+    firebase
+      .auth()
+      .currentUser.getIdToken(true)
+      .then(function(token) {
+        let userId = firebase.auth().currentUser.uid;
+        let params = {
+          authToken: token,
+          userId: userId,
+          mostRecentTime: mostRecentTime
+        };
+        url.search = new URLSearchParams(params);
+        fetch(url)
+          .then(function(response) {
+            // The response is a Response instance.
+            // You parse the data into a useable format using `.json()`
+            return response.json();
+          })
+          .then(function(data) {
+            console.log("returned something");
+          });
       });
-    });
   }
 
   render() {
-    return (
-      <div className="App">
-        <CssBaseline />
-        <Header
-          signIn={this.signIn}
-          isSignedIn={this.state.isSignedIn}
-        ></Header>
-        <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
-      </div>
-    );
+    if (this.state.isSignedIn) {
+      return (
+        <div className="App">
+          <CssBaseline />
+          <Header
+            signIn={this.signIn}
+            isSignedIn={this.state.isSignedIn}
+          ></Header>
+          <MainContainer isSignedIn={this.state.isSignedIn}></MainContainer>
+        </div>
+      );
+    } else {
+      return <HomePage signIn={this.signIn} />;
+    }
   }
 
   signIn() {
@@ -107,7 +118,6 @@ export class App extends Component {
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    const that = this;
     return new Promise((res, err) => {
       firebase
         .auth()
