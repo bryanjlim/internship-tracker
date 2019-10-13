@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
+import EmailList from './Email/EmailList';
 export class MainContainer extends Component {
      
     render() {
         return (
-            <div style={{minHeight: "400px", minWidth: "400px", backgroundColor: "aliceblue"}}></div>
+            <EmailList></EmailList>
         );
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import MainContainer from "./MainContainer";
-import Header from "./Header";
+import MainContainer from "./MainContainer/MainContainer";
+import Header from "./Header/Header";
 import { CssBaseline } from "@material-ui/core";
 
 export class App extends Component {
@@ -48,7 +48,7 @@ export class App extends Component {
 
   render() {
     return (
-      <div class="App">
+      <div className="App">
         <CssBaseline />
         <Header
           signIn={this.signIn}

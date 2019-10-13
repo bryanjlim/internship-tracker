@@ -30,12 +30,9 @@ export class Header extends Component {
               color="inherit"
               aria-label="menu"
             ></IconButton>
-            <Typography variant="h6" className={this.props.title}>
-              News
+            <Typography variant="title" className={this.props.title}>
+              Internship Tracker
             </Typography>
-            <Button color="inherit" onClick={this.props.signIn}>
-              Login
-            </Button>
           </Toolbar>
         </AppBar>
       </div>
