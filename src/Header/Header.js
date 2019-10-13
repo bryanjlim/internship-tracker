@@ -14,14 +14,19 @@ const styles = theme => ({
   },
   title: {
     flexGrow: 1
+  },
+  appBar: {
+    backgroundImage:
+      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)"
   }
 });
 
 export class Header extends Component {
   render() {
+    const { classes } = this.props;
     return (
-      <div className={this.props.root}>
-        <AppBar position="static">
+      <div className={classes.root}>
+        <AppBar position="static" className={classes.appBar}>
           <Toolbar>
             <IconButton
               edge="start"
