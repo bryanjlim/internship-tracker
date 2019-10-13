@@ -3,7 +3,6 @@ import firebase from "firebase";
 import MainContainer from "./MainContainer/MainContainer";
 import Header from "./Header/Header";
 import { CssBaseline } from "@material-ui/core";
-import "./App.css";
 import { Application } from "./dataCollections"; 
 
 export class App extends Component {
