@@ -44,14 +44,20 @@ export class App extends Component {
   }
 
   fetchData() {
-    var url = new URL('http://localhost:9000')
+    console.log("fetching data")
+    var url = new URL('http://localhost:9000/getData')
     let authToken = firebase.auth().currentUser.getIdToken();
-    let userId = firebase.auth().currentUser.userId();
+    let userId = firebase.auth().currentUser.userId;
     var params = {authToken, userId}
     url.search = new URLSearchParams(params)
-    fetch(url).then( function(res) {
+    fetch(url)
+    .then(function(response) {
+      // The response is a Response instance.
+      // You parse the data into a useable format using `.json()`
+      return response.json();
+    }).then(function(data) {
       console.log("returned something");
-      console.log(res);
+      console.log(data);
     })
   }
 
@@ -82,22 +88,23 @@ export class App extends Component {
 
   googleAuthentication() {
     const provider = new firebase.auth.GoogleAuthProvider();
-
+    const that = this;
+    console.log("started authenticating");
     return new Promise((res, err) => {
       firebase
         .auth()
         .signInWithPopup(provider)
         .then(function(result) {
+          console.log("finished authenticating");
           // This gives you a Google Access Token. You can use it to access the Google API.
           // The signed-in user info.
           const user = result.user;
           
-
+          that.fetchData();
 
 
           // ...
           res();
-          this.fetchData();
         })
         .catch(function(error) {
           // Handle Errors here.

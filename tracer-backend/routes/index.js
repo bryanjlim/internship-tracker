@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 
 module.exports = router;
 
-// Load client secrets from a local file.
+// Load client secrets from a local file. 
 fs.readFile('routes/credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Gmail API.
