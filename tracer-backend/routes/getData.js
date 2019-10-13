@@ -8,6 +8,7 @@ router.get("/", function(req, res, next) {
   let userId = req.query.userId;
   let accessToken = req.query.authToken;
   let mostRecentTime = req.query.mostRecentTime;
+  let finalYear = 0;
 //   console.log(userId);
 //   console.log(accessToken);
 //   console.log(mostRecentTime);
@@ -32,6 +33,24 @@ router.get("/", function(req, res, next) {
               console.log(data);
               //TODO convert mostrecent time to mostrecent cycle
 
+              console.log('SEE BELOW');
+              console.log(data.payload.headers[1].value);
+              let month = data.payload.headers[1].value.substring(72, 76);
+              let year = parseInt(data.payload.headers[1].value.substring(76, 81));
+              month = 'Jun'
+              year = 2015
+              primaryMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+              if (primaryMonths.includes(month)){
+                  finalYear = year-1;
+              }
+              else {
+                  finalYear = year;
+              }
+              console.log('finalYear');
+              console.log(finalYear);
+              console.log('hi');
+
+
               //
               
               // TODO get unencrypted header of email
@@ -39,8 +58,8 @@ router.get("/", function(req, res, next) {
               // ~~~~~~~~~~~~~
 
               // unencrypt body of email
-              let body = data.payload.parts[0].body.data;
-              let uBody = base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
+              //let body = data.payload.parts[0].body.data;
+              let uBody = "plkoji";//base64.decode(body.replace(/-/g, '+').replace(/_/g, '/'));
               console.log(uBody);
 
               parseEmail(uBody).then(results => {
