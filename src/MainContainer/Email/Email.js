@@ -12,78 +12,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Check from '@material-ui/icons/Check';
+import CheckIcon from '@material-ui/icons/Check';
 import SettingsIcon from '@material-ui/icons/Settings';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import VideoLabelIcon from '@material-ui/icons/VideoLabel';
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 import StepConnector from '@material-ui/core/StepConnector';
-import Button from '@material-ui/core/Button';
-
-const QontoConnector = withStyles({
-    alternativeLabel: {
-      top: 10,
-      left: 'calc(-50% + 16px)',
-      right: 'calc(50% + 16px)',
-    },
-    active: {
-      '& $line': {
-        borderColor: '#784af4',
-      },
-    },
-    completed: {
-      '& $line': {
-        borderColor: '#784af4',
-      },
-    },
-    line: {
-      borderColor: '#eaeaf0',
-      borderTopWidth: 3,
-      borderRadius: 1,
-    },
-  })(StepConnector);
-
-  const useQontoStepIconStyles = makeStyles({
-    root: {
-      color: '#eaeaf0',
-      display: 'flex',
-      height: 22,
-      alignItems: 'center',
-    },
-    active: {
-      color: '#784af4',
-    },
-    circle: {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      backgroundColor: 'currentColor',
-    },
-    completed: {
-      color: '#784af4',
-      zIndex: 1,
-      fontSize: 18,
-    },
-  });
-
-  function QontoStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed } = props;
-  
-    return (
-      <div
-        className={clsx(classes.root, {
-          [classes.active]: active,
-        })}
-      >
-        {completed ? <Check className={classes.completed} /> : <div className={classes.circle} />}
-      </div>
-    );
-  }
-  
-  QontoStepIcon.propTypes = {
-    active: PropTypes.bool,
-    completed: PropTypes.bool,
-  };
+import _ from 'lodash';
 
 const ColorlibConnector = withStyles({
     alternativeLabel: {
@@ -163,18 +97,22 @@ function ColorlibStepIcon(props) {
     const { active, completed } = props;
   
     const icons = {
-      1: <SettingsIcon />,
+      1: <CheckIcon />,
       2: <GroupAddIcon />,
-      3: <VideoLabelIcon />,
+      3: <SentimentVerySatisfiedIcon />,
     };
-  
+    let elementClass = classes.root;
+    console.log("Without additions");
+    console.log(elementClass);
+    if(active) {
+        elementClass = _.merge(classes.root, classes.active);
+    } else if (completed) {
+        elementClass = _.merge(classes.root, classes.completed);
+    }
+    console.log("With additions");
+    console.log(elementClass);
     return (
-      <div
-        className={clsx(classes.root, {
-          [classes.active]: active,
-          [classes.completed]: completed,
-        })}
-      >
+      <div className={elementClass}>
         {icons[String(props.icon)]}
       </div>
     );
