@@ -15,14 +15,7 @@ export class App extends Component {
       storageBucket: "track-my-internship.appspot.com",
       messagingSenderId: "700705257439",
       appId: "1:700705257439:web:7bceaee157b0e60d80366a",
-      measurementId: "G-5QG71NE3VY",
-      clientId:
-        "700705257439-rp5cs8jgvb28p3rqtlqhemererk5cb4p.apps.googleusercontent.com",
-      scopes: [
-        "email",
-        "profile",
-        "https://www.googleapis.com/auth/gmail.readonly"
-      ]
+      measurementId: "G-5QG71NE3VY"
     };
 
     if (!firebase.apps.length) {
