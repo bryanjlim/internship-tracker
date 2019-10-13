@@ -3,6 +3,7 @@ import { Typography, CssBaseline, withStyles } from "@material-ui/core";
 
 const styles = {
   overallContainer: {
+    textAlign: "center",
     width: "100%"
   },
   centerLogo: {
@@ -32,7 +33,7 @@ const styles = {
 const HomePage = props => {
   const { classes } = props;
   return (
-    <div>
+    <div className={classes.overallContainer}>
       <CssBaseline />
       <img
         className={classes.centerLogo}

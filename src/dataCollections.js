@@ -14,10 +14,10 @@ const applyStatus = {
 class Application {
     emails;
 
-    constructor(company){
+    constructor(company, status){
         this.company = company;
         this.lastUpdate = 0;
-        this.status = applyStatus.PROCESSING;
+        this.status = status;
         this.emails = [];
         applyList.push(this);
     }
